@@ -28,7 +28,7 @@ jobs:
 
       - name: Install dependencies
         # Add any other required libraries your notebooks use (e.g., scipy, bokeh)
-        run: pip install panel pandas matplotlib nbconvert
+        run: pip install panel pandas matplotlib nbconvert scipy
 
       - name: Build Pyodide app
         run: |
