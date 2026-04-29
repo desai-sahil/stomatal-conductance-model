@@ -33,7 +33,7 @@ jobs:
       - name: Build Pyodide app
         run: |
           mkdir public
-          panel convert *_dashboard.ipynb --to pyodide-worker --out public
+          panel convert *_dashboard.ipynb --to pyodide-worker --out public --index
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
