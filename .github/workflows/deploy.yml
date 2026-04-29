@@ -33,7 +33,7 @@ jobs:
       - name: Build Pyodide app
         run: |
           mkdir public
-          panel convert *_dashboard.ipynb --to pyodide-worker --out public --index
+          panel convert hysteresis_dashboard.ipynb merilo_transients_dashboard.ipynb oscillations_dashboard.ipynb --to pyodide-worker --out public --index
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
