@@ -87,8 +87,13 @@ will:
 2. Run `panel convert` on the three notebooks with `--to pyodide-worker`
    (Python runs in a Web Worker, so the UI stays responsive during heavy
    ODE integration).
-3. Generate an `index.html` listing the three dashboards (`--index`).
-4. Publish the result to GitHub Pages.
+3. Generate a fallback `index.html` listing the three dashboards (`--index`).
+4. Overwrite that generated index with the repo's own `index.html` — the
+   hand-written landing page that cites the paper and maps each dashboard to
+   its figure (Figure 2 → transients, Figure 3 → oscillations, Figure 4 →
+   hysteresis). Edit `index.html` at the repo root to change it; the `--index`
+   output is only a fallback if that step is ever removed.
+5. Publish the result to GitHub Pages.
 
 ---
 

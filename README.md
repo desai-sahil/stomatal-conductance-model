@@ -2,6 +2,15 @@
 
 Three interactive Jupyter notebooks implementing the combined stomatal model from Merilo et al. (2018), each exploring a different experimental protocol.
 
+These dashboards accompany:
+
+> Desai, S. A., & Stroock, A. D. (2025). *Abscisic acid-mediated water stress regulation
+> can mechanistically explain oscillations and water stress memory in stomatal conductance.*
+> bioRxiv. https://doi.org/10.64898/2025.12.26.696581
+
+Each notebook reproduces one figure from the paper (Figures 2, 3, and 4) and exposes the
+underlying model parameters as interactive sliders.
+
 ## Live dashboards
 
 A browser-hosted version of all three dashboards (no install required) is published at:
@@ -10,11 +19,11 @@ A browser-hosted version of all three dashboards (no install required) is publis
 
 The dashboards run entirely client-side via Pyodide — first load takes ~10–30 s while the scientific stack downloads, then slider interaction is near-instant. See [`DEPLOYMENT.md`](DEPLOYMENT.md) for how the build is wired up (GitHub Action + `panel convert`).
 
-| Notebook | Description |
-|----------|-------------|
-| `merilo_transients_dashboard.ipynb` | VPD step-response transients (80% → 60% RH) with experimental data overlay |
-| `oscillations_dashboard.ipynb` | Three-step humidity oscillation protocol (80% → 55% → 30% RH) |
-| `hysteresis_dashboard.ipynb` | Drydown / rewatering hysteresis cycle (ψ_xyl steps) |
+| Figure | Notebook | Description |
+|--------|----------|-------------|
+| **Figure 2** | `merilo_transients_dashboard.ipynb` | VPD step-response transients (80% → 60% RH) with experimental data overlay |
+| **Figure 3** | `oscillations_dashboard.ipynb` | Three-step humidity oscillation protocol (80% → 55% → 30% RH) |
+| **Figure 4** | `hysteresis_dashboard.ipynb` | Drydown / rewatering hysteresis cycle (ψ_xyl steps) |
 
 Each notebook generates publication-quality static figures **and** five interactive Panel dashboards (Hydraulics, V_stress, ABA Biosynthesis, ABA Signaling, Electrophysiology).
 
@@ -25,6 +34,7 @@ Each notebook generates publication-quality static figures **and** five interact
 ```
 ├── README.md
 ├── DEPLOYMENT.md                ← how the GitHub Pages build works
+├── index.html                   ← landing page for the deployed site
 ├── requirements.txt
 ├── hysteresis_dashboard.ipynb
 ├── oscillations_dashboard.ipynb
@@ -163,3 +173,26 @@ conda deactivate
 - **FileNotFoundError for CSVs** — Make sure the `data/` folder is in the same directory as the notebooks, and that you launched Jupyter from this folder.
 - **Dashboards not displaying** — Panel widgets require a running Jupyter kernel. If you see blank output, try restarting the kernel and running all cells again.
 - **Bokeh version warnings** — Safe to ignore. The dashboards work with Bokeh 3.x.
+
+---
+
+## Citation
+
+If you use this model or these dashboards, please cite:
+
+> Desai, S. A., & Stroock, A. D. (2025). Abscisic acid-mediated water stress regulation can
+> mechanistically explain oscillations and water stress memory in stomatal conductance.
+> *bioRxiv.* https://doi.org/10.64898/2025.12.26.696581
+
+```bibtex
+@article{desai2025stomatal,
+  author  = {Desai, Sahil A. and Stroock, Abraham D.},
+  title   = {Abscisic acid-mediated water stress regulation can
+             mechanistically explain oscillations and water stress
+             memory in stomatal conductance},
+  journal = {bioRxiv},
+  year    = {2025},
+  doi     = {10.64898/2025.12.26.696581},
+  url     = {https://doi.org/10.64898/2025.12.26.696581}
+}
+```

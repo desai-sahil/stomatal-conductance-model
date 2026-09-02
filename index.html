@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stomatal Conductance Model — Interactive Dashboards</title>
+<meta name="description" content="Interactive parameter dashboards accompanying Desai &amp; Stroock (2025), bioRxiv: ABA-mediated water stress regulation in stomatal conductance.">
+<style>
+  :root {
+    --bg:        #f6f7f5;
+    --surface:   #ffffff;
+    --border:    #dcdfd8;
+    --text:      #1c1f1a;
+    --muted:     #5c6357;
+    --accent:    #2f6b3f;
+    --accent-sf: #eaf2ec;
+    --shadow:    0 1px 2px rgba(28,31,26,.05), 0 4px 14px rgba(28,31,26,.06);
+    --shadow-hi: 0 2px 4px rgba(28,31,26,.07), 0 10px 28px rgba(28,31,26,.11);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:        #151714;
+      --surface:   #1e211d;
+      --border:    #33372f;
+      --text:      #e8ebe4;
+      --muted:     #a2a99a;
+      --accent:    #7fc08f;
+      --accent-sf: #23301f;
+      --shadow:    0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.35);
+      --shadow-hi: 0 2px 4px rgba(0,0,0,.35), 0 10px 28px rgba(0,0,0,.5);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+  a { color: var(--accent); }
+
+  /* ---- Masthead ---- */
+  header { margin-bottom: 2.25rem; }
+  h1 {
+    font-size: 1.9rem;
+    line-height: 1.2;
+    margin: 0 0 .4rem;
+    letter-spacing: -.02em;
+  }
+  .tagline { color: var(--muted); margin: 0; font-size: 1.02rem; }
+
+  /* ---- Paper citation card ---- */
+  .paper {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.35rem 1.5rem;
+    margin-bottom: 2.5rem;
+    box-shadow: var(--shadow);
+  }
+  .eyebrow {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 .55rem;
+  }
+  .paper-title {
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-size: 1.16rem;
+    line-height: 1.4;
+    font-weight: 600;
+    margin: 0 0 .5rem;
+  }
+  .authors { margin: 0 0 .7rem; color: var(--muted); font-size: .95rem; }
+  .paper-meta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: .6rem;
+    font-size: .9rem;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--accent-sf);
+    color: var(--accent);
+    border-radius: 4px;
+    padding: .12rem .5rem;
+    font-size: .74rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .doi { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .86rem; word-break: break-all; }
+
+  /* ---- Dashboard cards ---- */
+  h2.section {
+    font-size: .78rem; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--muted);
+    margin: 0 0 1rem; padding-bottom: .55rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.15rem;
+    margin: 0 0 2.5rem;
+    padding: 0;
+    list-style: none;
+  }
+  .card {
+    display: flex; flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.3rem 1.35rem 1.4rem;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow);
+    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+  }
+  .card:hover, .card:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hi);
+    border-color: var(--accent);
+    outline: none;
+  }
+  .fig {
+    font-size: .74rem; font-weight: 700; letter-spacing: .09em;
+    text-transform: uppercase; color: var(--accent);
+    margin: 0 0 .45rem;
+  }
+  .card h3 { font-size: 1.09rem; margin: 0 0 .5rem; letter-spacing: -.01em; }
+  .card p { margin: 0; font-size: .9rem; color: var(--muted); line-height: 1.5; flex-grow: 1; }
+  .card .go {
+    margin-top: 1rem; font-size: .86rem; font-weight: 600; color: var(--accent);
+  }
+  .card:hover .go .arrow { transform: translateX(3px); }
+  .arrow { display: inline-block; transition: transform .16s ease; }
+
+  /* ---- Notes + cite ---- */
+  .note {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    font-size: .89rem;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+  }
+  .note strong { color: var(--text); }
+  details {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+  }
+  summary { cursor: pointer; font-weight: 600; font-size: .93rem; }
+  summary::marker { color: var(--muted); }
+  .cite-block {
+    margin: .9rem 0 0;
+    font-size: .89rem;
+    line-height: 1.6;
+    padding-left: .9rem;
+    border-left: 2px solid var(--border);
+  }
+  pre {
+    margin: .9rem 0 0;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: .85rem 1rem;
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .8rem;
+    line-height: 1.5;
+  }
+  footer {
+    margin-top: 2.5rem; padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    font-size: .86rem; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Stomatal Conductance Model</h1>
+    <p class="tagline">Interactive parameter dashboards for the coupled hydropassive&ndash;hydroactive (HP&ndash;HA) stomatal model.</p>
+  </header>
+
+  <section class="paper">
+    <p class="eyebrow">Companion to</p>
+    <p class="paper-title">Abscisic acid-mediated water stress regulation can mechanistically explain oscillations and water stress memory in stomatal conductance</p>
+    <p class="authors">Sahil A. Desai and Abraham D. Stroock &middot; Cornell University</p>
+    <div class="paper-meta">
+      <span class="badge">Preprint</span>
+      <span><em>bioRxiv</em>, 2025 &middot;
+        <a class="doi" href="https://doi.org/10.64898/2025.12.26.696581">doi.org/10.64898/2025.12.26.696581</a>
+      </span>
+    </div>
+  </section>
+
+  <h2 class="section">Dashboards by figure</h2>
+  <ul class="grid">
+
+    <li><a class="card" href="./merilo_transients_dashboard.html">
+      <p class="fig">Figure 2</p>
+      <h3>VPD step transients</h3>
+      <p>Stomatal response to a humidity step (RH 80%&nbsp;&rarr;&nbsp;60%), compared against Merilo&nbsp;et&nbsp;al. (2018) data for wild-type (Col-0), the signaling mutant <em>ost1-3</em>, and the synthesis mutant <em>aao3-2</em>.</p>
+      <p class="go">Open dashboard <span class="arrow">&rarr;</span></p>
+    </a></li>
+
+    <li><a class="card" href="./oscillations_dashboard.html">
+      <p class="fig">Figure 3</p>
+      <h3>Stomatal oscillations</h3>
+      <p>Damped and sustained oscillations driven by a three-step humidity protocol (RH 80%&nbsp;&rarr;&nbsp;55%&nbsp;&rarr;&nbsp;30%), showing how ABA feedback sets oscillatory behavior.</p>
+      <p class="go">Open dashboard <span class="arrow">&rarr;</span></p>
+    </a></li>
+
+    <li><a class="card" href="./hysteresis_dashboard.html">
+      <p class="fig">Figure 4</p>
+      <h3>Drydown hysteresis</h3>
+      <p>Steady-state drydown and rewatering cycle, stepping &psi;<sub>xyl</sub> from 0 to &minus;1.2&nbsp;MPa and back, producing the water stress &ldquo;memory&rdquo; loop in the ABA&ndash;conductance relationship.</p>
+      <p class="go">Open dashboard <span class="arrow">&rarr;</span></p>
+    </a></li>
+
+  </ul>
+
+  <p class="note">
+    <strong>Each dashboard runs entirely in your browser</strong> via Pyodide &mdash; no install, no server. The first load takes roughly 10&ndash;30&nbsp;seconds while the scientific Python stack downloads; after that, it is cached and returns are near-instant. Every dashboard exposes five parameter groups as tabs: Hydraulics, V<sub>stress</sub>, ABA biosynthesis, ABA signaling, and Electrophysiology.
+  </p>
+
+  <details>
+    <summary>How to cite</summary>
+    <p class="cite-block">
+      Desai, S.&nbsp;A., &amp; Stroock, A.&nbsp;D. (2025). Abscisic acid-mediated water stress regulation can mechanistically explain oscillations and water stress memory in stomatal conductance. <em>bioRxiv</em>. https://doi.org/10.64898/2025.12.26.696581
+    </p>
+<pre>@article{desai2025stomatal,
+  author  = {Desai, Sahil A. and Stroock, Abraham D.},
+  title   = {Abscisic acid-mediated water stress regulation can
+             mechanistically explain oscillations and water stress
+             memory in stomatal conductance},
+  journal = {bioRxiv},
+  year    = {2025},
+  doi     = {10.64898/2025.12.26.696581},
+  url     = {https://doi.org/10.64898/2025.12.26.696581}
+}</pre>
+  </details>
+
+  <footer>
+    Source code and notebooks:
+    <a href="https://github.com/desai-sahil/stomatal-conductance-model">github.com/desai-sahil/stomatal-conductance-model</a>
+    &middot; Built with <a href="https://panel.holoviz.org">Panel</a> and <a href="https://pyodide.org">Pyodide</a>.
+  </footer>
+
+</div>
+</body>
+</html>
