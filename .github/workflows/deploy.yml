@@ -34,7 +34,11 @@ jobs:
         run: |
           mkdir public
           panel convert hysteresis_dashboard.ipynb merilo_transients_dashboard.ipynb oscillations_dashboard.ipynb --to pyodide-worker --out public --index
-          
+
+      - name: Install custom landing page
+        run: cp index.html public/index.html
+
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
