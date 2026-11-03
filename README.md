@@ -21,9 +21,9 @@ The dashboards run entirely client-side via Pyodide — first load takes ~10–3
 
 | Figure | Notebook | Description |
 |--------|----------|-------------|
-| **Figure 2** | `fig2_vpd_transients/merilo_transients_dashboard.ipynb` | VPD step-response transients (80% → 60% RH) with experimental data overlay |
-| **Figure 3** | `fig3_oscillations/oscillations_dashboard.ipynb` | Three-step humidity oscillation protocol (80% → 55% → 30% RH) |
-| **Figure 4** | `fig4_hysteresis/hysteresis_dashboard.ipynb` | Drydown / rewatering hysteresis cycle (ψ_xyl steps) |
+| **Figure 2** | `merilo_transients_dashboard.ipynb` | VPD step-response transients (80% → 60% RH) with experimental data overlay |
+| **Figure 3** | `oscillations_dashboard.ipynb` | Three-step humidity oscillation protocol (80% → 55% → 30% RH) |
+| **Figure 4** | `hysteresis_dashboard.ipynb` | Drydown / rewatering hysteresis cycle (ψ_xyl steps) |
 
 Each notebook generates publication-quality static figures **and** five interactive Panel dashboards (Hydraulics, V_stress, ABA Biosynthesis, ABA Signaling, Electrophysiology).
 
@@ -36,12 +36,9 @@ Each notebook generates publication-quality static figures **and** five interact
 ├── DEPLOYMENT.md                ← how the GitHub Pages build works
 ├── index.html                   ← landing page for the deployed site
 ├── requirements.txt
-├── fig2_vpd_transients/
-│   └── merilo_transients_dashboard.ipynb   ← Figure 2
-├── fig3_oscillations/
-│   └── oscillations_dashboard.ipynb        ← Figure 3
-├── fig4_hysteresis/
-│   └── hysteresis_dashboard.ipynb          ← Figure 4
+├── hysteresis_dashboard.ipynb
+├── oscillations_dashboard.ipynb
+├── merilo_transients_dashboard.ipynb
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml           ← Action that publishes to GitHub Pages
@@ -51,7 +48,7 @@ Each notebook generates publication-quality static figures **and** five interact
     └── merilo_2018_aao32_vpd_change.csv
 ```
 
-> **Important:** Keep `data/` at the repository root, one level above the notebook folders. The Figure 2 notebook reads the CSVs from `../data/` (it falls back to the copy on GitHub if that folder is not found).
+> **Important:** Keep `data/` in the same directory as the notebooks. The transients notebook reads CSVs from `data/`.
 
 ---
 
@@ -173,7 +170,7 @@ conda deactivate
 ## Troubleshooting
 
 - **"No module named panel"** — Make sure you installed requirements in the correct environment. Run `pip install panel` in the same environment where Jupyter is running.
-- **FileNotFoundError for CSVs** — Make sure the `data/` folder sits at the repository root, next to the three notebook folders.
+- **FileNotFoundError for CSVs** — Make sure the `data/` folder is in the same directory as the notebooks, and that you launched Jupyter from this folder.
 - **Dashboards not displaying** — Panel widgets require a running Jupyter kernel. If you see blank output, try restarting the kernel and running all cells again.
 - **Bokeh version warnings** — Safe to ignore. The dashboards work with Bokeh 3.x.
 

@@ -24,12 +24,12 @@ pn.extension("bokeh")
 If any dashboard also uses `pn.widgets.Tabulator`, add `"tabulator"` to the
 extension call: `pn.extension("bokeh", "tabulator")`.
 
-### 1b. CSV reads must fall back to a URL (only matters for `fig2_vpd_transients/merilo_transients_dashboard.ipynb`)
+### 1b. CSV reads must fall back to a URL (only matters for `merilo_transients_dashboard.ipynb`)
 
 Pyodide does not have a normal filesystem when served from GitHub Pages, but
-pandas can read directly from a URL. The notebook's `_load_csv` helper first
-looks for the file in `../data/` (the repository layout) and then in `data/`;
-if neither exists it reads the raw GitHub URL:
+pandas can read directly from a URL. The notebook's `_load_csv` helper reads
+from the local `data/` folder when it exists and otherwise from the raw GitHub
+URL:
 
 ```python
 DATA_BASE = (
@@ -38,10 +38,9 @@ DATA_BASE = (
 )
 
 def _load_csv(filename):
-    for local in (os.path.join("..", "data", filename), os.path.join("data", filename)):
-        if os.path.exists(local):
-            return pd.read_csv(local, skipinitialspace=True)
-    return pd.read_csv(DATA_BASE + filename, skipinitialspace=True)
+    local = os.path.join("data", filename)
+    src = local if os.path.exists(local) else (DATA_BASE + filename)
+    return pd.read_csv(src, skipinitialspace=True)
 ```
 
 This works identically when running the notebook locally and when running
@@ -87,8 +86,7 @@ in the `deploy.yml` file alongside this guide). On every push to `main` it
 will:
 
 1. Install your `requirements.txt`.
-2. Run `panel convert` on the three notebooks (in `fig2_vpd_transients/`,
-   `fig3_oscillations/`, `fig4_hysteresis/`) with `--to pyodide-worker`
+2. Run `panel convert` on the three notebooks with `--to pyodide-worker`
    (Python runs in a Web Worker, so the UI stays responsive during heavy
    ODE integration).
 3. Generate a fallback `index.html` listing the three dashboards (`--index`).
@@ -120,9 +118,9 @@ Before pushing, you can dry-run the build:
 
 ```bash
 pip install -r requirements.txt
-panel convert fig4_hysteresis/hysteresis_dashboard.ipynb \
-              fig3_oscillations/oscillations_dashboard.ipynb \
-              fig2_vpd_transients/merilo_transients_dashboard.ipynb \
+panel convert hysteresis_dashboard.ipynb \
+              oscillations_dashboard.ipynb \
+              merilo_transients_dashboard.ipynb \
   --to pyodide-worker \
   --out site \
   --index \
